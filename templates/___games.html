@@ -1,0 +1,20 @@
+{% for game in games %}
+    <div class="game-card" id="game-box-{{game.game_pk}}">
+    <form mix-post="/api-create-game-item"  >
+        <h2>{{ game.game_title }}</h2>
+        <p>Platform: {{ game.game_platform }}</p>
+        <p>Comment: {{ game.game_comment }}</p>
+
+        <button mix-delete="/game/{{ game.game_pk }}">Delete</button>
+        <button mix-get="/games/{{game.game_pk}}">
+    Edit
+</button>
+    </form>
+     
+</div>
+     
+    
+   
+
+  
+{% endfor %}

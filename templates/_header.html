@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/93d776830d.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/app.css">
+    
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="tooltip"></div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/signup">Signup</a>
+        {% if not user %}
+            <a href="/login">Login</a>
+        {% else %}
+            <a href="/logout">Logout</a>
+        {% endif %}
+        <form id="darkmode-form" action="/darkmode" method="get" style="display:inline;">
+            <button type="submit" id="darkmode-btn" style="background:none;border:none;cursor:pointer;">
+                {% if session.get('darkmode', False) %}
+                    <i class="fa-solid fa-moon" style="color: rgb(26, 43, 74);"></i>
+                {% else %}
+                    <i class="fa-solid fa-sun" style="color: rgb(26, 43, 74);"></i>
+                {% endif %}
+            </button>
+        </form>
+    </nav>
