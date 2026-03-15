@@ -1,11 +1,19 @@
- <form id="Update" mix-post="/api-create-game-item"  enctype="multipart/form-data" autocomplete="off">
+ <div class="update-form" id="game-box-{{game.game_pk}}"
+>
+ <form id="Update" mix-put="/games/{{game.game_pk}}" autocomplete="off">
     <div>
         <label for="title">Title</label>
-        <input placeholder="Title" name="game_title" type="text" mix-validate="{{x.REGEX_GAME_TITLE}}" >
+        <input 
+        placeholder="Title" 
+        name="game_title" 
+        type="text" 
+        mix-validate="{{x.REGEX_GAME_TITLE}}"
+        value="{{game.game_title}}"
+        >
     </div>
     <div>
         <label for="platform">Platform</label>
-        <select name="game_platform"mix-validate="{{x.REGEX_GAME_PLATFORM}}">
+        <select name="game_platform" value="{{game.game_platform}}"  mix-validate="{{x.REGEX_GAME_PLATFORM}}">
             <option value="">Platform</option>
             <option value="PS1">PS1</option>
             <option value="PS2">PS2</option>
@@ -34,8 +42,15 @@
     <div>
         <label for="comment">game_comment</label>
         
-        <input placeholder="game_comment" name="game_comment" type="text" mix-validate="{{x.REGEX_game_comment}}">
+        <input 
+        placeholder="game_comment" 
+        name="game_comment" 
+        type="text" 
+        mix-validate="{{x.REGEX_game_comment}}"
+        value="{{game.game_comment}}">
     </div>
 
     <button type="submit">Save</button>
+    <button  type="button" mix-get="/game-card/{{game.game_pk}}">Cancel</button>
    </form>
+</div>

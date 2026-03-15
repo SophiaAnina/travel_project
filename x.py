@@ -73,6 +73,7 @@ def validate_user_password():
     return user_password
 
 ##############################
+
 GAME_TITLE_MIN = 2
 GAME_TITLE_MAX = 50
 REGEX_GAME_TITLE = f"^.{{{GAME_TITLE_MIN},{GAME_TITLE_MAX}}}$"
@@ -81,6 +82,7 @@ def validate_game_title():
     if not re.match(REGEX_GAME_TITLE, game_title):
         raise Exception("company_exception game_title")
     return game_title
+
 
 ##############################
 GAME_PLATFORM_MIN = 2

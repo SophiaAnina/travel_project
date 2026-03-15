@@ -86,7 +86,19 @@ select{
   padding: 20px;
   line-height: 2;
 }
-
+body.lightmode .game-card{
+    border: 3px solid;
+}
+.game-card{
+    border: 3px solid;
+}
+.update-form{
+    border: 1px solid white;
+    padding: 20px;
+    div{
+        margin-bottom: 10px;
+    }
+}
 
 label{
     display: flex;

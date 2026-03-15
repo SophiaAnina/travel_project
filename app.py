@@ -26,9 +26,9 @@ def show_profile():
         db, cursor = x.db()
         q = "SELECT * FROM games"
         cursor.execute(q)
-        games = cursor.fetchall()  
-       
-        
+        games = cursor.fetchall()
+        # Sort games alphabetically by title
+        games = sorted(games, key=lambda g: g[1] if isinstance(g, (list, tuple)) else g.get('game_title', ''))
         return render_template("page_profile.html", user=user, x=x, games=games)
     except Exception as ex:
         ic(ex)
@@ -204,40 +204,57 @@ def api_darkmode_status():
 @app.post("/api-create-game-item")
 def api_create_game_item():
     try:
+
         game_title = x.validate_game_title()
         game_platform = x.validate_game_platform()
         game_comment = x.validate_game_comment()
+
         game_pk = uuid.uuid4().hex
 
         db, cursor = x.db()
 
-        q = "INSERT INTO games VALUES(%s, %s, %s, %s)"
-        cursor.execute(q, (game_pk, game_title, game_platform, game_comment))
+        q = "INSERT INTO games VALUES(%s,%s,%s,%s)"
+        cursor.execute(q,(game_pk,game_title,game_platform,game_comment))
         db.commit()
 
         game = {
-            "game_pk": game_pk,
-            "game_title": game_title,
-            "game_platform": game_platform,
-            "game_comment": game_comment
+            "game_pk":game_pk,
+            "game_title":game_title,
+            "game_platform":game_platform,
+            "game_comment":game_comment
         }
 
-        html = render_template("___game.html", game=game)
-
-        game_form = render_template("___game_form.html")
+        html = render_template("___game.html",game=game,x=x)
+        form = render_template("___game_form.html",x=x)
 
         return f"""
-        <browser mix-replace="#game-form">{game_form}</browser>
-        <browser mix-after-begin="#games">{html}</browser>
+        <browser mix-replace="#game-form">
+            {form}
+        </browser>
+
+        <browser mix-after-begin="#games">
+            {html}
+        </browser>
         """
 
     except Exception as ex:
         ic(ex)
-        return "ups", 500
+
+        if "Duplicate entry" in str(ex) and "game_title" in str(ex):
+            error_message = "Game title already exists"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin=\"#tooltip\">{___tip}</browser>""", 400
+
+        # Worst case
+        error_message = "System under maintenance"
+        ___tip = render_template("___tip.html", status="error", message=error_message)        
+        return f"""<browser mix-after-begin=\"#tooltip\">{___tip}</browser>""", 500
 
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+        
+
 ##############################
 @app.get("/games/<game_pk>")
 def get_game_by_id(game_pk):
@@ -246,11 +263,11 @@ def get_game_by_id(game_pk):
 
         db, cursor = x.db()
 
-        q = "SELECT * FROM games WHERE game_pk = %s"
+        q = "SELECT * FROM games  WHERE game_pk = %s"
         cursor.execute(q, (game_pk,))
         game = cursor.fetchone()
 
-        html = render_template("___update_game_form.html", game=game)
+        html = render_template("___update_game_form.html", game=game, x=x)
 
         return f"""
         <browser mix-replace="#game-box-{game_pk}">
@@ -291,40 +308,57 @@ def delete_game(game_pk):
 
 @app.put("/games/<game_pk>")
 def update_game(game_pk):
-    try:
 
-        game_pk = x.validate_id(game_pk)
+    game_pk = x.validate_id(game_pk)
 
-        game_title = x.validate_game_title()
-        game_platform = x.validate_game_platform()
-        game_comment = x.validate_game_comment()
+    game_title = x.validate_game_title()
+    game_platform = x.validate_game_platform()
+    game_comment = x.validate_game_comment()
 
-        db, cursor = x.db()
+    db,cursor = x.db()
 
-        q = """
-        UPDATE games
-        SET game_title=%s, game_platform=%s, game_comment=%s
-        WHERE game_pk=%s
-        """
+    q = """
+    UPDATE games
+    SET game_title=%s,
+        game_platform=%s,
+        game_comment=%s
+    WHERE game_pk=%s
+    """
 
-        cursor.execute(q, (game_title, game_platform, game_comment, game_pk))
-        db.commit()
+    cursor.execute(q,(game_title,game_platform,game_comment,game_pk))
+    db.commit()
 
-        game = {
-            "game_pk": game_pk,
-            "game_title": game_title,
-            "game_platform": game_platform,
-            "game_comment": game_comment
-        }
+    game = {
+        "game_pk":game_pk,
+        "game_title":game_title,
+        "game_platform":game_platform,
+        "game_comment":game_comment
+    }
 
-        html = render_template("___game.html", game=game)
+    html = render_template("___game.html",game=game,x=x)
 
-        return f"""
-        <browser mix-replace="#game-box-{game_pk}">
-            {html}
-        </browser>
-        """
+    return f"""
+    <browser mix-replace="#game-box-{game_pk}">
+        {html}
+    </browser>
+    """
 
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
+##############################
+@app.get("/game-card/<game_pk>")
+def get_game_card(game_pk):
+
+    game_pk = x.validate_id(game_pk)
+
+    db,cursor = x.db()
+
+    q = "SELECT * FROM games WHERE game_pk=%s ORDER BY game_title DESC"
+    cursor.execute(q,(game_pk,))
+    game = cursor.fetchone()
+
+    html = render_template("___game.html",game=game,x=x)
+
+    return f"""
+    <browser mix-replace="#game-box-{game_pk}">
+        {html}
+    </browser>
+    """

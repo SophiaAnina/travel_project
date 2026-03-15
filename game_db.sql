@@ -31,7 +31,8 @@ CREATE TABLE `games` (
   `game_pk` char(32) NOT NULL,
   `game_title` varchar(155) NOT NULL,
   `game_platform` varchar(155) NOT NULL,
-  `game_comment` varchar(255) NOT NULL
+  `game_comment` varchar(255) NOT NULL,
+  UNIQUE KEY `game_title` (`game_title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
