@@ -98,9 +98,11 @@ def validate_game_platform():
 
 GAME_COMMENT_MIN = 2
 GAME_COMMENT_MAX = 255
-REGEX_GAME_COMMENT = f"^.{{{GAME_COMMENT_MIN},{GAME_COMMENT_MAX}}}$"
+REGEX_GAME_COMMENT = f"^(.{{{GAME_COMMENT_MIN},{GAME_COMMENT_MAX}}})?$"  # Allow empty or valid length
 def validate_game_comment():
     game_comment = request.form.get("game_comment", "").strip()
+    if game_comment == "":
+        return None  # Allow NULL/empty
     if not re.match(REGEX_GAME_COMMENT, game_comment):
         raise Exception("company_exception game_comment")
     return game_comment

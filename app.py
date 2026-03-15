@@ -214,7 +214,7 @@ def api_create_game_item():
         db, cursor = x.db()
 
         q = "INSERT INTO games VALUES(%s,%s,%s,%s)"
-        cursor.execute(q,(game_pk,game_title,game_platform,game_comment))
+        cursor.execute(q,(game_pk,game_title,game_platform,game_comment))  # game_comment can be None (NULL)
         db.commit()
 
         game = {
@@ -325,7 +325,7 @@ def update_game(game_pk):
     WHERE game_pk=%s
     """
 
-    cursor.execute(q,(game_title,game_platform,game_comment,game_pk))
+    cursor.execute(q,(game_title,game_platform,game_comment,game_pk))  # game_comment can be None (NULL)
     db.commit()
 
     game = {
