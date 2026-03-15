@@ -10,5 +10,6 @@ window.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 });
+// Let mixhtml handle the game form submission and fade effect
 
 

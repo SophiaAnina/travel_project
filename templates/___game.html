@@ -1,13 +1,16 @@
-<div class="game-card" id="game-box-{{game.game_pk}}">
+<div class="game-card" id="game-box-{{game.game_pk}}" mix-fade-2000>
+    <div>
     <h2>{{game.game_title}}</h2>
-    <p>{{game.game_platform}}</p>
-    <p>{{game.game_comment or ''}}</p>
-
-    <button mix-delete="/game/{{game.game_pk}}">
+    <p>Platform{{game.game_platform}}</p>
+    <p>Comment{{game.game_comment or ''}}</p>
+   
+    <button mix-delete="/game/uploads/{{game.game_pk}}">
         Delete
     </button>
 
     <button type="button" mix-get="/games/{{game.game_pk}}">
         Edit
     </button>
+</div>
+     <img src="../static/images/uploads/{{game.game_image}}" alt="">
 </div>

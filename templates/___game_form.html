@@ -1,6 +1,6 @@
  
  
- <form id="create-game" mix-post="/api-create-game-item"  autocomplete="off">
+ <form id="create-game" mix-post="/api-create-game-item"  autocomplete="off" enctype="multipart/form-data">
     <div>
         <label for="title">Title</label>
         <input placeholder="Title" name="game_title" type="text" mix-validate="{{x.REGEX_GAME_TITLE}}" >
@@ -39,5 +39,9 @@
         <input placeholder="game_comment (optional)" name="game_comment" type="text" mix-validate="{{x.REGEX_GAME_COMMENT}}">
     </div>
     
+    <div>
+        <label for="game_image">Game Image (optional)</label>
+        <input type="file" name="game_image" accept="image/*">
+    </div>
     <button type="submit">Submit</button>
    </form>

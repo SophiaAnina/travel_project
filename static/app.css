@@ -54,6 +54,7 @@ main{
     }
 }
 #profile{
+    margin-top: 25vh;
     display: flex;
     flex-direction: column;
     input{
@@ -74,7 +75,7 @@ main{
 #games{
 display: grid;
   width: 80%;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   margin-top: 20px;
   gap: 20px;
 }
@@ -82,16 +83,15 @@ select{
     padding: 6px;
 }
 .game-card{
-  border: 1px solid white;
+  border: 3px solid white;
   padding: 20px;
   line-height: 2;
+  display: flex;
 }
 body.lightmode .game-card{
     border: 3px solid;
 }
-.game-card{
-    border: 3px solid;
-}
+
 .update-form{
     border: 1px solid white;
     padding: 20px;
@@ -151,7 +151,8 @@ nav{
 }
 
 img{
-    transform: rotate(-90deg);
+    transform: rotate(-90deg) translateY(100px);
+    width: 200px;
 }
 
 

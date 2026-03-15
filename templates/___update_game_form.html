@@ -50,6 +50,8 @@
         value="{{game.game_comment or ''}}">
     </div>
 
+     <input type="file" name="game_image" accept="image/*">
+
     <button type="submit">Save</button>
     <button  type="button" mix-get="/game-card/{{game.game_pk}}">Cancel</button>
    </form>

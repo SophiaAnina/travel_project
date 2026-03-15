@@ -5,6 +5,7 @@ import time
 from flask_session import Session
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 
 from icecream import ic
 ic.configureOutput(prefix=f'______ | ', includeContext=True)
@@ -204,6 +205,7 @@ def api_darkmode_status():
 @app.post("/api-create-game-item")
 def api_create_game_item():
     try:
+        
 
         game_title = x.validate_game_title()
         game_platform = x.validate_game_platform()
@@ -211,21 +213,38 @@ def api_create_game_item():
 
         game_pk = uuid.uuid4().hex
 
+        # Handle image upload
+        image_file = None
+        image_filename = None
+        if 'game_image' in request.files:
+            image_file = request.files['game_image']
+            if image_file and image_file.filename:
+                filename = secure_filename(image_file.filename)
+                # Make filename unique with game_pk
+                filename = f"{game_pk}_{filename}"
+                upload_folder = os.path.join('static', 'images', 'uploads')
+                os.makedirs(upload_folder, exist_ok=True)
+                image_path = os.path.join(upload_folder, filename)
+                image_file.save(image_path)
+                image_filename = filename
+
         db, cursor = x.db()
 
-        q = "INSERT INTO games VALUES(%s,%s,%s,%s)"
-        cursor.execute(q,(game_pk,game_title,game_platform,game_comment))  # game_comment can be None (NULL)
+        # Add image_filename to DB 
+        q = "INSERT INTO games VALUES(%s,%s,%s,%s,%s)"
+        cursor.execute(q, (game_pk, game_title, game_platform, game_comment, image_filename))
         db.commit()
 
         game = {
-            "game_pk":game_pk,
-            "game_title":game_title,
-            "game_platform":game_platform,
-            "game_comment":game_comment
+            "game_pk": game_pk,
+            "game_title": game_title,
+            "game_platform": game_platform,
+            "game_comment": game_comment,
+            "game_image": image_filename
         }
 
-        html = render_template("___game.html",game=game,x=x)
-        form = render_template("___game_form.html",x=x)
+        html = render_template("___game.html", game=game, x=x)
+        form = render_template("___game_form.html", x=x)
 
         return f"""
         <browser mix-replace="#game-form">
@@ -307,6 +326,7 @@ def delete_game(game_pk):
 ##############################
 
 @app.put("/games/<game_pk>")
+
 def update_game(game_pk):
 
     game_pk = x.validate_id(game_pk)
@@ -314,6 +334,21 @@ def update_game(game_pk):
     game_title = x.validate_game_title()
     game_platform = x.validate_game_platform()
     game_comment = x.validate_game_comment()
+     
+    # Handle image upload
+    image_file = None
+    image_filename = None
+    if 'game_image' in request.files:
+        image_file = request.files['game_image']
+        if image_file and image_file.filename:
+            filename = secure_filename(image_file.filename)
+            # Make filename unique with game_pk
+            filename = f"{game_pk}_{filename}"
+            upload_folder = os.path.join('static', 'images', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            image_path = os.path.join(upload_folder, filename)
+            image_file.save(image_path)
+            image_filename = filename
 
     db,cursor = x.db()
 
@@ -322,17 +357,19 @@ def update_game(game_pk):
     SET game_title=%s,
         game_platform=%s,
         game_comment=%s
+        image_filename=%s
     WHERE game_pk=%s
     """
 
-    cursor.execute(q,(game_title,game_platform,game_comment,game_pk))  # game_comment can be None (NULL)
+    cursor.execute(q,(game_title,game_platform,game_comment,game_pk,image_filename))  # game_comment can be None (NULL)
     db.commit()
 
     game = {
         "game_pk":game_pk,
         "game_title":game_title,
         "game_platform":game_platform,
-        "game_comment":game_comment
+        "game_comment":game_comment,
+        "game_image":image_filename
     }
 
     html = render_template("___game.html",game=game,x=x)

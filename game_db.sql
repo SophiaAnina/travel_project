@@ -32,7 +32,8 @@ CREATE TABLE `games` (
   `game_title` varchar(155) NOT NULL,
   `game_platform` varchar(155) NOT NULL,
   `game_comment` varchar(255) NULL,
-  UNIQUE KEY `game_title` (`game_title`)
+  UNIQUE KEY `game_title` (`game_title`),
+  'game_image' varchar(255) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -48,6 +49,7 @@ CREATE TABLE `users` (
   `user_email` varchar(155) NOT NULL,
   `user_password` varchar(255) NOT NULL,
   `user_created_at` bigint(20) NOT NULL
+  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
